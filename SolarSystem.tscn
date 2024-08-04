@@ -1,0 +1,135 @@
+[gd_scene load_steps=22 format=3 uid="uid://blbomxgwrf8j6"]
+
+[ext_resource type="Script" path="res://SolarSystem.gd" id="1_8x84f"]
+[ext_resource type="Texture2D" uid="uid://bo645k8e1kbf1" path="res://ESO_-_Milky_Way.jpg" id="1_fqo3y"]
+[ext_resource type="Script" path="res://天体.gd" id="2_07woe"]
+[ext_resource type="Texture2D" uid="uid://becprevanob8l" path="res://earth_texturemap.png" id="2_yaoto"]
+[ext_resource type="Texture2D" uid="uid://pomh8w6e2rn3" path="res://moon_texturemap.png" id="3_fxmgh"]
+[ext_resource type="Texture2D" uid="uid://bkh35pihmsyhv" path="res://mars_texturemap.png" id="4_7wem7"]
+
+[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_d7h2c"]
+panorama = ExtResource("1_fqo3y")
+
+[sub_resource type="Sky" id="Sky_lq0if"]
+sky_material = SubResource("PanoramaSkyMaterial_d7h2c")
+
+[sub_resource type="Environment" id="Environment_56nqk"]
+background_mode = 2
+sky = SubResource("Sky_lq0if")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_vhs31"]
+shading_mode = 0
+albedo_color = Color(1, 0.560784, 0, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_m67rg"]
+material = SubResource("StandardMaterial3D_vhs31")
+radius = 50.0
+height = 100.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_iwttj"]
+radius = 50.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nm8fb"]
+albedo_texture = ExtResource("2_yaoto")
+
+[sub_resource type="SphereMesh" id="SphereMesh_igerl"]
+material = SubResource("StandardMaterial3D_nm8fb")
+radius = 20.0
+height = 40.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_gj7bv"]
+radius = 20.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tuxwd"]
+albedo_texture = ExtResource("3_fxmgh")
+
+[sub_resource type="SphereMesh" id="SphereMesh_g0m5n"]
+material = SubResource("StandardMaterial3D_tuxwd")
+radius = 5.0
+height = 10.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_e52mk"]
+radius = 5.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ro5hj"]
+albedo_texture = ExtResource("4_7wem7")
+
+[sub_resource type="SphereMesh" id="SphereMesh_dfjul"]
+material = SubResource("StandardMaterial3D_ro5hj")
+radius = 15.0
+height = 30.0
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_2xk68"]
+radius = 15.0
+
+[node name="SolarSystem" type="Node3D"]
+script = ExtResource("1_8x84f")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_56nqk")
+
+[node name="Sun" type="StaticBody3D" parent="."]
+script = ExtResource("2_07woe")
+"天体半径" = 40.0
+"体表重力" = 10.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Sun"]
+mesh = SubResource("SphereMesh_m67rg")
+
+[node name="OmniLight3D" type="OmniLight3D" parent="Sun"]
+light_energy = 1000.0
+omni_range = 1000.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sun"]
+shape = SubResource("SphereShape3D_iwttj")
+
+[node name="Earth" type="StaticBody3D" parent="." node_paths=PackedStringArray("父天体")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -400)
+script = ExtResource("2_07woe")
+"父天体" = NodePath("../Sun")
+"轨道半径" = 400.0
+"天体半径" = 20.0
+"体表重力" = 9.81
+"自转周期" = 200.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Earth"]
+mesh = SubResource("SphereMesh_igerl")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Earth"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.592178, 0, -0.188416)
+shape = SubResource("SphereShape3D_gj7bv")
+
+[node name="Moon" type="StaticBody3D" parent="." node_paths=PackedStringArray("父天体")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -450)
+script = ExtResource("2_07woe")
+"父天体" = NodePath("../Earth")
+"轨道半径" = 140.0
+"轨道起始角度" = 90.0
+"天体半径" = 10.0
+"体表重力" = 2.0
+"潮汐锁定" = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Moon"]
+mesh = SubResource("SphereMesh_g0m5n")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Moon"]
+shape = SubResource("SphereShape3D_e52mk")
+
+[node name="Mars" type="StaticBody3D" parent="." node_paths=PackedStringArray("父天体")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -700)
+script = ExtResource("2_07woe")
+"父天体" = NodePath("../Sun")
+"轨道半径" = 800.0
+"轨道起始角度" = 180.0
+"天体半径" = 15.0
+"体表重力" = 4.0
+"自转周期" = 150.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Mars"]
+mesh = SubResource("SphereMesh_dfjul")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Mars"]
+shape = SubResource("SphereShape3D_2xk68")
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1200, 0)
