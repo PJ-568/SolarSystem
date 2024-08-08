@@ -42,13 +42,14 @@ func 打开地图视角(设定在地图视角:bool) -> void:
 
 
 func _physics_process(delta):
+	最近的天体重力 = Vector3.ZERO
 	for 子天体 in 所处星系.天体表:
 		var force = 子天体.取重力加速度(global_position) * self.mass
 		apply_central_force(force)
 
 		# 忽略距离实在太远的天体的重力影响
 		if (子天体.global_position.distance_to(global_position) < 2.0 * 子天体.天体半径):
-			if (force.length() > 最近的天体重力.length()):
+			if (force.length() > 0):
 				最近的天体重力 = force # 确定“下”的方向
 
 
@@ -126,13 +127,13 @@ func 处理自动转向(delta) -> void:
 	else:
 		var 转向目标方向的向量 = Quaternion(global_transform.basis.y, -最近的天体重力.normalized()) * global_transform.basis.get_rotation_quaternion()
 
-		if (地面检测.is_colliding()):	# 每次这里着陆一次后就好像一直失效了
+		if (地面检测.is_colliding()):
 			angular_velocity = (地面检测.get_collider() as 天体).constant_angular_velocity.project(-最近的天体重力.normalized())
 			angular_damp = 0
 			
 			global_rotation = 转向目标方向的向量.normalized().get_euler()
 		else:
-			global_rotation = (global_transform.basis.get_rotation_quaternion().slerp(转向目标方向的向量.normalized(), 自动转向速度 * delta)).get_euler()
+			global_rotation = global_transform.basis.get_rotation_quaternion().slerp(转向目标方向的向量.normalized(), 自动转向速度 * delta).get_euler()
 
 
 func _input(event):
