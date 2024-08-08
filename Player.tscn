@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://dbb7ornc1bcc8"]
+
+[ext_resource type="Script" path="res://Player.gd" id="1_5xrxt"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_glk0x"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_hyfj6"]
+
+[node name="Player" type="RigidBody3D" node_paths=PackedStringArray("镜头", "镜头位点", "地面检测")]
+mass = 60.0
+script = ExtResource("1_5xrxt")
+"镜头" = NodePath("CameraPivot/Camera3D")
+"镜头位点" = NodePath("CameraPivot")
+"地面检测" = NodePath("GroundCast")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_glk0x")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_hyfj6")
+
+[node name="CameraPivot" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
+
+[node name="SpotLight3D" type="SpotLight3D" parent="CameraPivot/Camera3D"]
+spot_range = 50.0
+
+[node name="GroundCast" type="RayCast3D" parent="."]
+target_position = Vector3(0, -1.4, 0)

@@ -1,25 +1,23 @@
 extends Node3D
 class_name SolarSystem
 
-var 实例 : SolarSystem = self
-# var 天体表 = 取所有子天体()
+# var 实例: SolarSystem = self
+var 天体表: Array = 初始化所有子天体()
 
-func 取所有子天体():
+func 初始化所有子天体() -> Array:
 	var 子节点 := self.get_children()
-	var 天体表 = []
+	var 表 = []
 	
 	for child in 子节点:
 		if (child is 天体):
-			天体表.append(child)
-			child.初始化()
+			表.append(child)
 	
-	天体表.sort_custom(比较父天体数量)
-	return 天体表
-
-func 比较父天体数量(a:天体, b:天体):
-	if a.取父天体数量() < b.取父天体数量():
-		return true
-	return false
+	表.sort_custom(func(a: 天体, b: 天体): return a.取父天体数量() < b.取父天体数量())
+	
+	for 子天体 in 表:
+		子天体.初始化()
+	return 表
 
 func _ready():
-	取所有子天体()
+	# 实例 = self
+	天体表 = 初始化所有子天体()
