@@ -20,8 +20,11 @@ var 镜头X旋转: float
 var 最近的天体重力: Vector3 = Vector3.ZERO
 var 在地图视角: bool
 
+var 紧贴地面: bool
+var 紧贴地面位置: Vector3
+
 # 是否着陆 => 地面检测.is_colliding()
-# 取地面 => 地面检测.get_collider() as 天体
+# 取地面 => (地面检测.get_collider() as 天体)
 
 
 func _ready():
@@ -77,6 +80,17 @@ func 处理运动输入(_delta) -> void:
 		移动方向 += 上
 	if (Input.is_action_pressed("下移")):
 		移动方向 -= 上
+	
+	var 应该紧贴地面: bool = 移动方向 == Vector3.ZERO and (地面检测.get_collider() as 天体) != null and (地面检测.get_collider() as 天体).取相对体表移速(self.global_position, self.linear_velocity).length() < .2
+
+	if (应该紧贴地面):
+		if (紧贴地面):
+			self.global_position = (地面检测.get_collider() as 天体).to_global(self.紧贴地面位置)
+		else:
+			紧贴地面 = true
+			紧贴地面位置 = (地面检测.get_collider() as 天体).to_local(global_position)
+	else:
+		紧贴地面 = false
 
 	if (移动方向 != Vector3.ZERO):
 		apply_central_force(喷气背包强度 * 移动方向.normalized())
@@ -100,21 +114,25 @@ func 处理镜头输入(_delta) -> void:
 
 func 处理自动转向(delta) -> void:
 	angular_velocity = Vector3.ZERO
-	angular_damp = 10.0
+	angular_damp = 10
 
 	var 不在重力范围: bool = 最近的天体重力 == Vector3.ZERO
 	if (不在重力范围):
-		var dx: float = lerp(0.0, -镜头X旋转, 自动转向速度 * delta)
+		var dx = lerp(0.0, -镜头X旋转, 自动转向速度 * delta)
 		镜头X旋转 += dx
 
 		镜头位点.rotate_x(deg_to_rad(-dx))
 		rotate(镜头位点.global_transform.basis.x, deg_to_rad(dx))
 	else:
 		var 转向目标方向的向量 = Quaternion(global_transform.basis.y, -最近的天体重力.normalized()) * global_transform.basis.get_rotation_quaternion()
-		if (地面检测.is_colliding()):
+
+		if (地面检测.is_colliding()):	# 每次这里着陆一次后就好像一直失效了
+			angular_velocity = (地面检测.get_collider() as 天体).constant_angular_velocity.project(-最近的天体重力.normalized())
+			angular_damp = 0
+			
 			global_rotation = 转向目标方向的向量.normalized().get_euler()
 		else:
-			global_rotation = global_transform.basis.get_rotation_quaternion().slerp(转向目标方向的向量.normalized(), 自动转向速度 * delta).get_euler()
+			global_rotation = (global_transform.basis.get_rotation_quaternion().slerp(转向目标方向的向量.normalized(), 自动转向速度 * delta)).get_euler()
 
 
 func _input(event):
