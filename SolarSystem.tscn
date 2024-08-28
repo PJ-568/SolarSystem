@@ -73,6 +73,7 @@ environment = SubResource("Environment_56nqk")
 script = ExtResource("2_07woe")
 "天体半径" = 40.0
 "体表重力" = 10.0
+metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Sun"]
 mesh = SubResource("SphereMesh_m67rg")
@@ -92,12 +93,12 @@ script = ExtResource("2_07woe")
 "天体半径" = 20.0
 "体表重力" = 9.81
 "自转周期" = 200.0
+metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Earth"]
 mesh = SubResource("SphereMesh_igerl")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Earth"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.592178, 0, -0.188416)
 shape = SubResource("SphereShape3D_gj7bv")
 
 [node name="Moon" type="StaticBody3D" parent="." node_paths=PackedStringArray("父天体")]
@@ -109,6 +110,7 @@ script = ExtResource("2_07woe")
 "天体半径" = 10.0
 "体表重力" = 2.0
 "潮汐锁定" = true
+metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Moon"]
 mesh = SubResource("SphereMesh_g0m5n")
@@ -125,6 +127,7 @@ script = ExtResource("2_07woe")
 "天体半径" = 15.0
 "体表重力" = 4.0
 "自转周期" = 60.0
+metadata/_edit_group_ = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Mars"]
 mesh = SubResource("SphereMesh_dfjul")

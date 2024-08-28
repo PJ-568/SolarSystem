@@ -13,9 +13,9 @@ class_name PJ568Player
 @export var 鼠标灵敏度: float = .3
 var 鼠标输入: Vector2
 var 镜头X旋转: float
-@export var 喷气背包强度: float = 800
+@export var 喷气背包强度: float = 600
 @export var 自动转向速度: float = 2
-@export var 跳跃强度: float = 5.0
+@export var 跳跃强度: float = 100.0
 
 var 最近的天体重力: Vector3 = Vector3.ZERO
 var 在地图视角: bool
